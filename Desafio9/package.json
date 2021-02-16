@@ -1,0 +1,24 @@
+{
+  "name": "desafio9",
+  "version": "1.0.0",
+  "description": "desafio 9",
+  "main": "index.js",
+  "scripts": {
+    "start": "node js/app.js",
+    "dev": "nodemon ts/app.ts",
+    "build": "tsc -p."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/node": "^14.14.28",
+    "nodemon": "^2.0.7",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
+  }
+}
