@@ -4,8 +4,8 @@
   "description": "desafio 9",
   "main": "index.js",
   "scripts": {
-    "start": "node js/app.js",
-    "dev": "nodemon ts/app.ts",
+    "start": "node js/server.js",
+    "dev": "nodemon ts/server.ts",
     "build": "tsc -p."
   },
   "author": "",
