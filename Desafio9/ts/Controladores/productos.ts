@@ -67,25 +67,59 @@ router.get('/', VerificaArray, async (req:Request,res:Response) => {
 router.get('/:id', VerificaArray,  async (req:Request,res:Response) => { 
     try {
         let id: string = req.params.id;
-        res.status(200);
-        res.json("el Id que ingresaste es " + id);
+        var productoSeleccionado = aProductos.filter((array) => array.Id == id);
+        if (productoSeleccionado.length > 0){
+            res.status(200);
+            res.json(productoSeleccionado);
+        } else {
+            res.status(404);
+            res.json({ codigo: 'Error', mensaje : "Producto no encontrado"});
+        }
     } catch (error) {
         res.status(400);
         res.json({ codigo: '400', mensaje : "error al intentar listar productos"});
     }
 });
 
-router.get('/formulario/:id', VerificaArray, async (req:Request, res:Response) => {
+router.get('/formulario/Crear', VerificaArray, async (req:Request, res:Response) => {
     res.status(200);
     res.sendFile(Path.join(__dirname, '../.././Public', 'index.html'));
 });
 
-router.post('/actualizar', VerificaArray, async (req:Request, res:Response) => {
-    res.status(200);
-    res.send(req.body);
+router.put('/actualizar/:id', VerificaArray, verificarDatosProducto, async (req:Request, res:Response) => {
+    let id: string = req.params.id;
+    const { title, price, thumbnail } = req.body;
+    const indiceElemento = aProductos.findIndex(prod => prod.Id == id); 
+    if (indiceElemento) {
+        let newProductos = [...aProductos];
+        newProductos[indiceElemento] = {...newProductos[indiceElemento], Title: title};
+        newProductos[indiceElemento] = {...newProductos[indiceElemento], Price: price};
+        newProductos[indiceElemento] = {...newProductos[indiceElemento], Thumbnail: thumbnail};
+        aProductos = newProductos;
+        res.status(200);
+        res.json(newProductos[indiceElemento]);
+    } else {
+        res.status(404);
+        res.json({ codigo: '404', mensaje : "error, productono encontrado"});
+    }
+    
 });
 
-router.post("/", verificarDatosinsertProducto, (req:Request,res:Response) => {
+router.delete('/borrar/:id', VerificaArray, verificarDatosProducto, async (req:Request, res:Response) => {
+    let id: string = req.params.id;
+    const indiceElemento = aProductos.findIndex(prod => prod.Id == id); 
+    if (indiceElemento) {
+        let productoBorrado = aProductos[indiceElemento];
+        aProductos.splice(indiceElemento,1);
+        res.status(200);
+        res.json(productoBorrado);
+    } else {
+        res.status(404);
+        res.json({ codigo: '404', mensaje : "error, productono encontrado"});
+    }
+});
+
+router.post("/",VerificaArray, verificarDatosinsertProducto, (req:Request,res:Response) => {
     try {
         const { title, price, thumbnail } = req.body;
         let objeto = {
@@ -114,6 +148,16 @@ function verificarDatosinsertProducto(req: Request, res: Response, next: Functio
     } else {
         next();
     }};
+
+function verificarDatosProducto(req: Request, res: Response, next: Function) {
+    const { title, price, thumbnail } = req.body;
+    if (title == "" || !price || thumbnail == "") {
+        res.status(400);
+        res.json({codigo: '400', error : "Faltan valores, por favor verifique"});
+    } else {
+        next();
+    }
+};
 
 async function VerificaArray(req: Request, res: Response, next: Function) {
     if (aProductos.length == 0) {
