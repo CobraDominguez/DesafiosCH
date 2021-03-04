@@ -17,7 +17,7 @@ interface Plantilla{
     mesagge: string
 };
 
-server.engine('ntl', (filepath:string, options: Object, callback: Function)=>{
+server.engine('ntl', (filepath:string, options: Plantilla, callback: Function): any=>{
     fs.readFile(filepath, function (err, content) {
         if(err) return callback(new Error(err.message));
         let rendered = content.toString()
